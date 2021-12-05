@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { AddButtonComponent } from "./Components/atoms/addButton";
+import { AddButtonComponent} from "./Components/atoms/addTodos";
+import {   UpdateButtonComponent } from "./Components/atoms/updateTodos";
+import {  RemoveButtonComponent } from "./Components/atoms/removeTodos";
 import { FormComponent } from "./Components/atoms/Form";
 import { Todo } from "./Components/todo";
 import { Typography } from "@material-ui/core";
 import { db } from "./Config/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, addDoc } from "firebase/firestore";
 import "./App.css";
 
 
@@ -23,26 +25,30 @@ function App() {
       // getDocs return all documents from specfic collections
       const data = await getDocs(todosCollectionRef)
       // fetching data with id 
-      setTodos(data.docs.map(doc => ([doc.id ,"----",doc.data().todos])))
+      setTodos(data.docs.map(doc => ([doc.id, "----", doc.data().todos])))
     }
     getTodos()
   }, [])
 
 
 
-
-
-
-  const addTodosHandler = (event) => {
-    //prevant from refreshing page on adding todos
+  const addTodosHandler = async (event) => {
     event.preventDefault();
     console.log("console1", input);
     // appending new data along with new data ...(spread operator)...concept
-    setTodos([...todos, input]);
-    // clear input field after adding todos in the list
+    // setTodos([...todos, input]);
+    // adding value to doc-collection
+    await addDoc(todosCollectionRef, { 
+      todos: input,
+      // timestamp:Firebase.firestore.FieldValue.serverTimestamp()
+     })
     setInput("");
   };
 
+
+  const updateTodos = async (id) => {
+
+  }
   return (
     <div className="App">
       <Typography>React-App -- 🤖 </Typography>
@@ -55,6 +61,11 @@ function App() {
         ))}
       </ul>
       <AddButtonComponent addTodosHandler={addTodosHandler} input={input} />
+      <br/>
+      <UpdateButtonComponent updateTodos={updateTodos} />
+      <br/>
+
+      <RemoveButtonComponent />
     </div>
   );
 }
