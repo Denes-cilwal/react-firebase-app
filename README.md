@@ -1,6 +1,4 @@
-# React-Firebase-Todo-app
+# React-Firebase-demo
 
-- Firebase
-- React JS
-- Deploy
+- Firebase(V9)
 - Firestore
